@@ -1,4 +1,4 @@
-package main
+package clock
 
 import "testing"
 
@@ -23,7 +23,7 @@ func Test_getDate(t *testing.T) {
 	for _, tt := range theTests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				_, err := getDate(tt.url)
+				_, err := GetDate(tt.url)
 
 				if !(isErrorExist(err) == tt.isError) {
 					t.Errorf("Expected error existing: %t, got %s", tt.isError, err)

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/beevik/ntp"
+	"dev01/clock"
 )
 
 var (
@@ -14,20 +14,11 @@ var (
 )
 
 func main() {
-	t, err := getDate(host)
+	t, err := clock.GetDate(host)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "invalid response:", err)
 		os.Exit(1)
 	}
 
 	fmt.Println(t.Format(format))
-}
-
-func getDate(host string) (time.Time, error) {
-	t, err := ntp.Time(host)
-	if err != nil {
-		return time.Time{}, err
-	}
-
-	return t, nil
 }
