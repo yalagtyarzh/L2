@@ -13,13 +13,13 @@ func Unpack(str string) (string, error) {
 
 	for i := 0; i < len(runes); i++ {
 		// Обрабатываем неэкранированные цифры
-		if unicode.IsDigit(runes[i]) && shield == false {
+		if unicode.IsDigit(runes[i]) && !shield {
 			return "", fmt.Errorf("got unshielded digit in position %d", i+1)
 		}
 
 		// Обрабатываем последний символ
 		if i+1 == len(runes) {
-			if runes[i] == '\\' {
+			if runes[i] == '\\' && !shield {
 				return "", fmt.Errorf("unshielded backslash in end of string")
 			}
 
