@@ -5,25 +5,21 @@ import (
 	"unicode"
 )
 
-func Reverse(strs []string) []string {
+func Reverse(strs []string) {
 	// Получаем "словарь" строки
 	for i, j := 0, len(strs)-1; i < len(strs)/2; i, j = i+1, j-1 {
 		// Меняем слова местами
 		strs[i], strs[j] = strs[j], strs[i]
 	}
-
-	return strs
 }
 
-func RemoveDuplicates(strs []string) []string {
+func RemoveDuplicates(strs []string) {
 	res := make([]string, 0)
 	for _, v := range strs {
 		if !Contains(res, v) {
 			res = append(res, v)
 		}
 	}
-
-	return res
 }
 
 func Contains(s []string, str string) bool {

@@ -82,11 +82,11 @@ func Sort(strs []string, params config.Flags) []string {
 	}
 
 	if params.Unique {
-		res = utils.RemoveDuplicates(res)
+		utils.RemoveDuplicates(res)
 	}
 
 	if params.Reverse {
-		res = utils.Reverse(res)
+		utils.Reverse(res)
 	}
 
 	if params.B {
