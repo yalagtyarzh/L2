@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"dev03/config"
-	"dev03/scan"
+	"dev03/pkg/fscan"
 	"dev03/srtstr"
 )
 
@@ -32,7 +32,7 @@ func main() {
 	}
 	defer file.Close()
 
-	strs, err := scan.Scan(file)
+	strs, err := fscan.Scan(file)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
