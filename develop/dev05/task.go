@@ -52,7 +52,7 @@ func main() {
 	res := grep.Grep(pattern, strs, flags)
 
 	if flags.Count {
-		return
+		fmt.Println(len(res))
 	} else {
 		printMap(res)
 	}

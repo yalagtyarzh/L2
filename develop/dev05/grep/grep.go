@@ -1,7 +1,6 @@
 package grep
 
 import (
-	"fmt"
 	"strings"
 
 	"dev05/config"
@@ -34,7 +33,6 @@ func Grep(pattern string, input []string, params config.Flags) map[int]string {
 	}
 
 	if params.Count {
-		fmt.Println(len(res))
 		return res
 	}
 
