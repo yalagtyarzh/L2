@@ -1,4 +1,4 @@
-package cat
+package cut
 
 import (
 	"bufio"

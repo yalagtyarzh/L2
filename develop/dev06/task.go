@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"dev06/cat"
 	"dev06/config"
+	"dev06/cut"
 )
 
 func main() {
@@ -15,5 +15,5 @@ func main() {
 
 	flag.Parse()
 
-	cat.StartCat(flags)
+	cut.StartCat(flags)
 }
