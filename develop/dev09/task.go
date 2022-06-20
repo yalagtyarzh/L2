@@ -1,23 +1,34 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
+	"log"
+	"sync"
+
+	"dev09/download"
 )
 
+var wg sync.WaitGroup
+
 func main() {
-	url := os.Args[1]
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("invalid url")
-		os.Exit(1)
+	destination := flag.String("d", "./tmp", "destination for output")
+
+	flag.Parse()
+
+	urls := flag.Args()
+	if len(urls) < 1 {
+		fmt.Println("usage: task [option] [URL]...")
+		return
 	}
-	defer resp.Body.Close()
 
-	f, err := os.Create("index.html")
-	defer f.Close()
+	for _, v := range urls {
+		wg.Add(1)
+		err := download.Store(*destination, v, &wg)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
-	io.Copy(f, resp.Body)
+	wg.Wait()
 }
