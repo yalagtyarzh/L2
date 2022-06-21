@@ -5,15 +5,20 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
+var wg sync.WaitGroup
+
 func Download(dest string, url string) error {
+	wg.Add(1)
 	fname, err := download(dest, url)
 	if err != nil {
 		return err
 	}
+	wg.Wait()
 
 	f, err := os.OpenFile(fname, os.O_RDWR, 0644)
 	if err != nil {
@@ -33,16 +38,19 @@ func Download(dest string, url string) error {
 	doc.Find("link").Each(findElement("rel", &resources))
 
 	for _, resource := range resources {
+		wg.Add(1)
 		_, err = download(dest, url+resource)
 		if err != nil {
 			return err
 		}
 	}
+	wg.Wait()
 
 	return nil
 }
 
 func download(dest string, url string) (string, error) {
+	defer wg.Done()
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
