@@ -14,13 +14,13 @@ var wg sync.WaitGroup
 
 func Download(dest string, url string) error {
 	wg.Add(1)
-	fname, err := download(dest, url)
+	filename, err := download(dest, url)
 	if err != nil {
 		return err
 	}
 	wg.Wait()
 
-	f, err := os.OpenFile(fname, os.O_RDWR, 0644)
+	f, err := os.OpenFile(filename, os.O_RDWR, os.FileMode(0644))
 	if err != nil {
 		return err
 	}
@@ -37,12 +37,35 @@ func Download(dest string, url string) error {
 	doc.Find("script").Each(findElement("src", &resources))
 	doc.Find("link").Each(findElement("rel", &resources))
 
+	s, err := doc.Html()
+	if err != nil {
+		return err
+	}
+
+	err = f.Truncate(0)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.Seek(0, 0)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.WriteString(s)
+	if err != nil {
+		return err
+	}
+
 	for _, resource := range resources {
 		wg.Add(1)
-		_, err = download(dest, url+resource)
-		if err != nil {
-			return err
-		}
+		r := resource
+		go func() {
+			_, err := download(dest, url+r)
+			if err != nil {
+				return
+			}
+		}()
 	}
 	wg.Wait()
 
@@ -57,7 +80,6 @@ func download(dest string, url string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	//dest = addSlash(dest)
 	path := []string{dest}
 	divided := strings.Split(resp.Request.URL.String(), "/")
 	path = append(path, divided[2:]...)
@@ -65,7 +87,7 @@ func download(dest string, url string) (string, error) {
 	err = os.MkdirAll(strings.Join(path[:len(path)-1], "/"), 0777)
 
 	var file *os.File
-	if resp.Header.Get("content-type") == "text/html" {
+	if strings.Contains(resp.Header.Get("content-type"), "text/html") {
 		file, err = os.Create(strings.Join(path, "/") + "index.html")
 	} else {
 		file, err = os.Create(strings.Join(path, "/"))
@@ -74,22 +96,23 @@ func download(dest string, url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	defer file.Close()
 
 	_, err = io.Copy(file, resp.Body)
-
 	return file.Name(), nil
 }
 
 func findElement(attr string, output *[]string) func(i int, selection *goquery.Selection) {
 	return func(i int, selection *goquery.Selection) {
+		a := attr
 		src, _ := selection.Attr(attr)
-		if src == "stylesheet" {
-			src, _ = selection.Attr("href")
+		if a == "rel" {
+			if src == "stylesheet" {
+				a = "href"
+				src, _ = selection.Attr(a)
+			}
 		}
 
-		// БОЛЬШОЕ СПАСИБО GOQUERY ЗА ВАЛИДАЦИЮ ПО ПУСТОЙ СТРОКЕ А НЕ ПО OK, XD
 		if src == "" {
 			return
 		}
@@ -98,17 +121,7 @@ func findElement(attr string, output *[]string) func(i int, selection *goquery.S
 
 		if r[0] == '/' && r[0] != r[1] {
 			*output = append(*output, src)
-			selection.SetAttr(attr, "."+src)
+			selection.SetAttr(a, "."+src)
 		}
 	}
 }
-
-//func addSlash(dest string) string {
-//	runes := []rune(dest)
-//	if runes[len(runes)-1] != '/' {
-//		runes = append(runes, '/')
-//	}
-//
-//	dest = string(runes)
-//	return dest
-//}
