@@ -36,6 +36,7 @@ func Download(dest string, url string) error {
 	doc.Find("img").Each(findElement("src", &resources))
 	doc.Find("script").Each(findElement("src", &resources))
 	doc.Find("link").Each(findElement("rel", &resources))
+	doc.Find("source").Each(findElement("srcset", &resources))
 
 	s, err := doc.Html()
 	if err != nil {
