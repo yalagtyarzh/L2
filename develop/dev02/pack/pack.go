@@ -6,6 +6,7 @@ import (
 	"unicode"
 )
 
+// Unpack - функция, совершающее распаковку строки с помощью цифр и спец. символов
 func Unpack(str string) (string, error) {
 	res := make([]rune, 0)
 	runes := []rune(str)
@@ -27,16 +28,17 @@ func Unpack(str string) (string, error) {
 			break
 		}
 
-		// Обрабатываем бэкслыши
+		// Обрабатываем бэкслэши, по итогу обработки делаем следующий обрабатываемый символ экранированным
 		if runes[i] == '\\' && shield == false {
 			shield = true
 			continue
 		}
 
+		// Получаем следующий символ
 		next := runes[i+1]
 
-		// Обработка всего остального xd
 		if unicode.IsDigit(next) {
+			// Обрабатываем символ, распаковывая его в том случае, если следующим символом является цифра
 			num, err := strconv.Atoi(string(next))
 			if err != nil {
 				return "", fmt.Errorf("converting string->int error")
@@ -50,6 +52,7 @@ func Unpack(str string) (string, error) {
 
 			continue
 		} else {
+			// В ином случае просто аппендим его в результат
 			shield = false
 
 			res = append(res, runes[i])
@@ -59,6 +62,7 @@ func Unpack(str string) (string, error) {
 	return string(res), nil
 }
 
+// MultipleRunes возвращает срез размером mult из r рун
 func MultipleRunes(r rune, mult int) []rune {
 	res := make([]rune, mult)
 	for i := range res {

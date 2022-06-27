@@ -15,5 +15,5 @@ func main() {
 
 	flag.Parse()
 
-	cut.StartCat(flags)
+	cut.StartCut(flags)
 }

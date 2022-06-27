@@ -10,29 +10,28 @@ import (
 	"dev03/utils"
 )
 
+// Sort сортирует строки с помощью переданных параметров, хранящихся в params
 func Sort(strs []string, params config.Flags) []string {
 	s := make([]string, 0)
-	cols := make([][]string, 0)
+	cells := make([][]string, 0)
 	colNumber := params.Column
 
+	// Конструируем строки и ячейки для сортировки
 	for _, v := range strs {
 		if len(strings.Fields(v)) >= colNumber && colNumber != 0 {
-			cols = append(cols, strings.Fields(v))
+			// Если задано, что мы сортируем по столбцам, и при этом наша строка имеет равное или большое количество
+			// столбцов, чем требуется - заполняем массив ячеек
+			cells = append(cells, strings.Fields(v))
 		} else {
+			// Иначе заполняем массив строк
 			s = append(s, v)
 		}
 	}
 
-	//fmt.Println(cols)
-
-	// Если не лень, солнце, добей сортировку с выбранным столбцом + числовое значение
-	// ТОЧЬ-В-ТОЧЬ как в юниксе, (просто в начале выводятся ВСЕ СТРОКИ В ОТСОРТИРОВАННОМ
-	// ВИДЕ, КОТОРЫЕ НЕ УДОВЛЯТВОРЕЮТ КОЛИЧЕСТВУ СТОЛБЦОВ, ПОТОМ СТРОКИ С УДОВЛЕТВОРЯЮЩИМ
-	// СТОЛБЦОМ С ОТРИЦАТЕЛЬНЫМ ЗНАЧЕНИЕМ, ПОТОМ СТРОКИ С НУЖНЫМ СТОЛБЦОМ, НО БЕЗ ЧИСЛА,
-	// ПОТОМ СТРОКИ С НУЖНЫМ СТОЛБЦОМ И ПОЛОЖИТЕЛЬНЫМ ЗНАЧЕНИЕМ)
+	// Алгоритм сортировки для строк
 	sort.SliceStable(
 		s, func(i, j int) bool {
-			if params.Num && params.Column == 0 {
+			if params.Num {
 				inum, _ := utils.GetNumFromString(s[i])
 				jnum, _ := utils.GetNumFromString(s[j])
 				if jnum == 0 && inum == 0 {
@@ -46,33 +45,37 @@ func Sort(strs []string, params config.Flags) []string {
 		},
 	)
 
-	if len(cols) != 0 {
+	// Алгоритм сортировки для полей
+	if len(cells) != 0 {
 		sort.SliceStable(
-			cols, func(i, j int) bool {
+			cells, func(i, j int) bool {
 				if params.Num {
-					inum, _ := utils.GetNumFromString(cols[i][colNumber-1])
-					jnum, _ := utils.GetNumFromString(cols[j][colNumber-1])
+					inum, _ := utils.GetNumFromString(cells[i][colNumber-1])
+					jnum, _ := utils.GetNumFromString(cells[j][colNumber-1])
 					if jnum == 0 && inum == 0 {
-						return cols[i][colNumber-1] < cols[j][colNumber-1]
+						return cells[i][colNumber-1] < cells[j][colNumber-1]
 					}
 
 					return inum < jnum
 				}
 
-				return cols[i][colNumber-1] < cols[j][colNumber-1]
+				return cells[i][colNumber-1] < cells[j][colNumber-1]
 			},
 		)
 	}
 
-	rcols := make([]string, 0)
-	for _, v := range cols {
-		rcols = append(rcols, strings.Join(v, " "))
+	// Объединяем отдельные ячейки в строки
+	rows := make([]string, 0)
+	for _, v := range cells {
+		rows = append(rows, strings.Join(v, " "))
 	}
 
+	// Составляем результат сортировки
 	res := make([]string, 0)
 	res = append(res, s...)
-	res = append(res, rcols...)
+	res = append(res, rows...)
 
+	// Если задан флаг, то проверяем, одинаковы ли у нас получился результат с входными данными
 	if params.IsSorted {
 		if reflect.DeepEqual(res, strs) {
 			fmt.Println("Sorted")
@@ -81,16 +84,19 @@ func Sort(strs []string, params config.Flags) []string {
 		}
 	}
 
+	// Если задан флаг на уникальность - удаляем дубликаты
 	if params.Unique {
-		utils.RemoveDuplicates(res)
+		res = utils.RemoveDuplicates(res)
 	}
 
+	// Если задан флаг обратной сортировки - просто меняем местами все элементы среза
 	if params.Reverse {
 		utils.Reverse(res)
 	}
 
+	// Если задан параметр игнора хвостовых пробелов - стираем их
 	if params.B {
-		for i, _ := range res {
+		for i := range res {
 			res[i] = strings.TrimSpace(res[i])
 		}
 	}

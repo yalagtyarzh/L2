@@ -15,6 +15,7 @@ type Client struct {
 	Conn net.Conn
 }
 
+// NewTelnetClient инициализирует новый клиент с определенным порт, хостом и таймаутом соединения
 func NewTelnetClient(host string, port string, timeout int) (*Client, error) {
 	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, port), time.Duration(timeout)*time.Second)
 	if err != nil {
@@ -36,6 +37,7 @@ func NewTelnetClient(host string, port string, timeout int) (*Client, error) {
 	return &Client{Conn: conn}, nil
 }
 
+// Start запускает tcp клиент и запускает свой обработчик
 func (c *Client) Start() {
 	sigChan := make(chan os.Signal, 1)
 	errChan := make(chan error, 1)
@@ -55,6 +57,7 @@ func (c *Client) Start() {
 	}
 }
 
+// handle является простейшим обработчиком клиента, представляющий собой строку с приглашением для ввода
 func handle(conn net.Conn, errChan chan error) {
 	reader := bufio.NewReader(os.Stdin)
 	for {

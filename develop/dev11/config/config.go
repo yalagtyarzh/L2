@@ -8,6 +8,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+// Config представляет собой конфиг запускаемого http сервера
 type Config struct {
 	IP   string `env:"L2_IP" env-default:"127.0.0.1"`
 	Port string `env:"L2_PORT" env-default:":8080"`
@@ -16,6 +17,7 @@ type Config struct {
 var cfg *Config
 var once sync.Once
 
+// GetConfig получает конфиг из переменных окружения и записывает значения в структуру Config, возвращая его
 func GetConfig() *Config {
 	once.Do(
 		func() {

@@ -8,6 +8,7 @@ import (
 	"dev01/clock"
 )
 
+// Константы для хоста и формата времени в программе для вывода
 var (
 	host   = "0.ru.pool.nt.org"
 	format = time.UnixDate

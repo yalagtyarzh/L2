@@ -9,6 +9,7 @@ import (
 	"dev11/models"
 )
 
+// UnmarshalEvent анмаршалит тело запрос в объект Event и валидирует ID события и UserID
 func UnmarshalEvent(r *http.Request) (models.Event, error) {
 	b, err := io.ReadAll(r.Body)
 	if err != nil {

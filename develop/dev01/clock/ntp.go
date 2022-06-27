@@ -6,6 +6,7 @@ import (
 	"github.com/beevik/ntp"
 )
 
+// GetDate - функция, возвращающее время из NTP хоста
 func GetDate(host string) (time.Time, error) {
 	t, err := ntp.Time(host)
 	if err != nil {

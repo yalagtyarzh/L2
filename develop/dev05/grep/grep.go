@@ -1,16 +1,18 @@
 package grep
 
 import (
+	"fmt"
 	"strings"
 
 	"dev05/config"
 	"dev05/utils"
 )
 
+// Grep ищет строки, в котором есть паттерн переданный нами паттерн
 func Grep(pattern string, input []string, params config.Flags) map[int]string {
+	// Если задано, что игнорируем регистр - приводим паттерн к нижнему регистру
 	if params.IgnoreCase {
 		pattern = strings.ToLower(pattern)
-		//pattern = utils.PreAppend(pattern, " ")
 	}
 
 	res := make(map[int]string)
@@ -22,28 +24,37 @@ func Grep(pattern string, input []string, params config.Flags) map[int]string {
 
 		var found bool
 		if params.Fixed {
+			// Если ищем конкретную строку, а не паттерн, то осуществляем сравнивание строк
 			found = str == pattern
+			//pattern = utils.PreAppend(pattern, " ")
 		} else {
+			// В иных случаях проверяем на наличие заданной строки в искомой строке
 			found = strings.Contains(str, pattern)
 		}
 
+		// Заполняем срез результатов с учетом заданного параметра Invert
 		if !found == params.Invert {
 			res[i] = v
 		}
 	}
 
+	// Если задано выдать лишь количество найденных строк - выводим его размер и выходим из функции
 	if params.Count {
-		return res
+		fmt.Println(len(res))
+		return nil
 	}
 
+	// Определяем область поиска строк
 	before := utils.FindMax(params.Before, params.Context)
 	after := utils.FindMax(params.After, params.Context)
 
+	// Заполняем результирующий срез теми строками, которые находятся "вокруг" строк, имеющих нужный паттерн
 	GetStringsAroundFound(res, input, before, after)
 
 	return res
 }
 
+// GetStringsAroundFound находит все строки, которые находятся "вокруг" найденных строк
 func GetStringsAroundFound(m map[int]string, input []string, before uint, after uint) {
 	c := utils.CopyKeys(m)
 

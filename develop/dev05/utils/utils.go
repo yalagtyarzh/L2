@@ -9,6 +9,7 @@ package utils
 //	return res.String()
 //}
 
+// FindMax возвращает наибольшее число из переданных двух
 func FindMax(a, b uint) uint {
 	if a > b {
 		return a
@@ -17,6 +18,7 @@ func FindMax(a, b uint) uint {
 	return b
 }
 
+// CopyKeys возвращает все ключи мапы в качестве среза
 func CopyKeys(m map[int]string) []int {
 	c := make([]int, 0)
 	for k := range m {

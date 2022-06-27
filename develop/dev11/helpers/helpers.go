@@ -7,15 +7,18 @@ import (
 	"dev11/models"
 )
 
+// responseOK представляет собой класс валидного json ответа
 type responseOK struct {
 	Message string         `json:"message"`
 	Events  []models.Event `json:"events"`
 }
 
+// responseError представляет собой класс невалидного json ответа
 type responseError struct {
 	Error string `json:"error"`
 }
 
+// ThrowError прокидывает в ответ responseError с переданным статусом ответа и ошибкой
 func ThrowError(w http.ResponseWriter, status int, err error) {
 	resp := responseError{
 		Error: err.Error(),
@@ -28,6 +31,7 @@ func ThrowError(w http.ResponseWriter, status int, err error) {
 	w.Write(out)
 }
 
+// WriteResponse прокидывает ответ responseOK с переданным статусом, сообщением и срезом событий
 func WriteResponse(w http.ResponseWriter, status int, msg string, events []models.Event) {
 	resp := responseOK{
 		Message: msg,

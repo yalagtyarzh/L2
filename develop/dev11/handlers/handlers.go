@@ -12,20 +12,25 @@ import (
 	"dev11/validation"
 )
 
+// Repository представляет собой класс приложения
 type Repository struct {
 	DB repository.DatabaseRepo
 }
 
+// Repo для обработки запросов с помощью встроенных в него структур
 var Repo *Repository
 
+// NewRepo возвращает новый Repository
 func NewRepo(repo repository.DatabaseRepo) *Repository {
 	return &Repository{DB: repo}
 }
 
+// NewHandler инициализирует переданный Repository в обработчиках
 func NewHandler(r *Repository) {
 	Repo = r
 }
 
+// CreateEvent обрабатывает запрос на создание события
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
@@ -49,6 +54,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteResponse(w, http.StatusOK, "Event created successfully!", []models.Event{event})
 }
 
+// UpdateEvent обрабатывает запрос на обновление события
 func UpdateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
@@ -72,6 +78,7 @@ func UpdateEvent(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteResponse(w, http.StatusOK, "Event updated successfully!", []models.Event{event})
 }
 
+// DeleteEvent обрабатывает запрос на удаление события
 func DeleteEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
@@ -94,8 +101,10 @@ func DeleteEvent(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteResponse(w, http.StatusOK, "Event deleted successfully!", []models.Event{event})
 }
 
+// dateLayout для парсинга времени, переданного в Get запросах
 const dateLayout = "2006-01-02"
 
+// EventsForDay обрабатывает запрос на получение событий за день
 func EventsForDay(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodGet {
@@ -135,6 +144,7 @@ func EventsForDay(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteResponse(w, http.StatusOK, "Got events!", events)
 }
 
+// EventsForWeek обрабатывает запрос на получение событий за неделю
 func EventsForWeek(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodGet {
@@ -174,6 +184,7 @@ func EventsForWeek(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteResponse(w, http.StatusOK, "Got events!", events)
 }
 
+// EventsForMonth обрабатывает запрос на получение событий за месяц
 func EventsForMonth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodGet {

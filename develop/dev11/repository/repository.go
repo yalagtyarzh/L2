@@ -6,6 +6,7 @@ import (
 	"dev11/models"
 )
 
+// DatabaseRepo представляет собой интерфейс, диктующий необходимые методы для подключаемых баз данных
 type DatabaseRepo interface {
 	InsertEvent(e models.Event) error
 	UpdateEvent(e models.Event) error

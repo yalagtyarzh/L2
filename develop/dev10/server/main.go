@@ -26,6 +26,7 @@ func main() {
 	}
 }
 
+// handle представляет собой простейший обработчик tcp соединения, который выводит данные, записанные клиентом в сокет
 func handle(conn net.Conn) {
 	defer conn.Close()
 	notify := make(chan error)

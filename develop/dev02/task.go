@@ -13,7 +13,6 @@ func main() {
 		fmt.Println("Please enter only one argument")
 		os.Exit(1)
 	}
-
 	res, err := pack.Unpack(input[0])
 	if err != nil {
 		fmt.Println(err)

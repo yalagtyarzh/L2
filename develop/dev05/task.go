@@ -51,9 +51,7 @@ func main() {
 
 	res := grep.Grep(pattern, strs, flags)
 
-	if flags.Count {
-		fmt.Println(len(res))
-	} else {
+	if res != nil {
 		printMap(res)
 	}
 }

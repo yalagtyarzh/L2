@@ -6,6 +6,7 @@ import (
 	"dev11/handlers"
 )
 
+// New создает новый http.Handler с переданными endpointами и обработчиками, которые из обрабатывают
 func New() http.Handler {
 	mux := http.NewServeMux()
 

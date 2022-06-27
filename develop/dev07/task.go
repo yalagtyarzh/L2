@@ -7,6 +7,7 @@ import (
 )
 
 //Первый вариант - с помощью горутин и WaitGroup
+// or объединяет N каналов в один
 func or(chans ...<-chan interface{}) <-chan interface{} {
 	out := make(chan interface{})
 
@@ -31,6 +32,7 @@ func or(chans ...<-chan interface{}) <-chan interface{} {
 }
 
 // Второй вариант - с помощью reflect.Select
+// or объединяет N каналов в один
 //func or(chans ...<-chan interface{}) <-chan interface{} {
 //	out := make(chan interface{})
 //

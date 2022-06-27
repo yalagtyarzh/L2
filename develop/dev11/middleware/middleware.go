@@ -7,6 +7,7 @@ import (
 	"dev11/logging"
 )
 
+// EventLogger предоставляет middleware логирования для http обработчиков
 func EventLogger(next http.Handler, logger *logging.Logger) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

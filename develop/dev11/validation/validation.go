@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// ValidateURLValues валидирует url string с переданным словарей url параметров, проверяя их наличие
 func ValidateURLValues(values url.Values, dict ...string) (map[string]string, error) {
 	kvalue := make(map[string]string)
 	missedValues := make([]string, 0)
