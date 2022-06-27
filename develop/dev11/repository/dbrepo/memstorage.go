@@ -26,14 +26,13 @@ func (m *MemoryStorage) UpdateEvent(e models.Event) error {
 	return nil
 }
 
-func (m *MemoryStorage) DeleteEvent(e models.Event) error {
-	// TODO: Rework logic entirely
-	_, ok := m.events[e.ID]
+func (m *MemoryStorage) DeleteEvent(id int) error {
+	_, ok := m.events[id]
 	if !ok {
 		return errors.New("event not found")
 	}
 
-	delete(m.events, e.ID)
+	delete(m.events, id)
 	return nil
 }
 

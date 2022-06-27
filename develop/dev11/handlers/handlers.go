@@ -85,7 +85,7 @@ func DeleteEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = Repo.DB.DeleteEvent(event)
+	err = Repo.DB.DeleteEvent(event.ID)
 	if err != nil {
 		helpers.ThrowError(w, http.StatusGatewayTimeout, fmt.Errorf("insert event error: %s", err))
 		return
